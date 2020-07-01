@@ -1,0 +1,186 @@
+
+
+
+
+
+<body>
+
+
+<script src="http://d3js.org/d3.v4.min.js"></script>
+<script src="http://labratrevenge.com/d3-tip/javascripts/d3.tip.v0.6.3.js"></script>
+<script src="http://cdn.jsdelivr.net/g/filesaver.js"></script>
+<!----->
+
+<form action="/CreateGraph" method="get" style="width:100%; background-color:#CBF4FA; border-radius: 15px">
+    <br />
+
+    <div id:"caja" style="text-align:center;">
+        <input type="checkbox" name="SW_in_Avg"> SW_in_Avg </input>
+        <input type="checkbox" name="SW_out_Avg"> SW_out_Avg </input>
+        <input type="checkbox" name="LW_in_Avg"> LW_in_Avg </input>
+        <input type="checkbox" name="LW_out_Avg"> LW_out_Avg </input>
+        <input type="checkbox" name="Rnet_Avg"> Rnet_Avg </input>
+    </div>
+    <br />
+    <div></div>
+    <div id:"tiempo" style="text-align:center; ">
+        <p>Start&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbspEnd</p>
+
+        <input type="date" id="date1"></input>
+        <input type="date" id="date2"></input>
+
+    </div>
+    <button style="width:100%; background-color:lightsteelblue;  border-color: #6DBEC9; border-radius: 15px">Create Graph and File</button>
+    </form>
+    <br />
+    <div id="body"></div>
+    <div><button id="save-btn" style="width:100%;border-color: #6DBEC9; background-color:lightsteelblue; border-radius: 15px">Download Data</button>
+    </div>
+</div>
+<script>
+
+    /*function EstadoCajas() {
+        var SW_i = $('input[id=SW_in_Avg]').prop('checked');
+        var SW_o = $('input[id=SW_out_Avg]').prop('checked');
+        var LW_i = $('input[id=LW_in_Avg]').prop('checked');
+        var LW_o = $('input[id=LW_out_Avg]').prop('checked');
+        var Rnet = $('input[id=Rnet_Avg]').prop('checked');
+        return [SW_i, SW_o, LW_i, LW_o, Rnet];
+       
+
+    }
+    function EstadoFecha() {
+        var startdate = document.querySelector('input[id=date1]').value;
+        var enddate = document.querySelector('input[id=date2]').value;
+        return [startdate, enddate];
+
+    }
+    
+    function CallGraph() {
+        var url = '/notes';
+        console.log(url);
+        var valoresCaja = EstadoCajas();
+        var valoresFecha = EstadoFecha();
+        console.log(valoresCaja);
+        console.log(valoresFecha);
+        
+
+       
+        
+
+        
+        var xmlHttp = new XMLHttpRequest();
+
+        xmlHttp.onreadystatechange = function () {
+        if (xmlHttp.readyState === 4) {
+        //handle server response here if you want to
+                }
+              }
+        xmlHttp.open("POST", url, true); // false for synchronous request
+        xmlHttp.send(valoresCaja);
+
+
+
+    }
+    */
+
+
+
+
+    var data = (JSON.parse(JSON.stringify({{{ resultado }}})));
+
+    console.log(data);
+    /*var gida2 = JSON.parse();
+    /*var gida1 = JSON.stringify(gida2);
+    /*console.log(gida1)
+    //var gida = JSON.parse(gida1);
+    */
+  
+
+
+    var margin = {top: 70, right: 350, bottom: 100, left: 70},
+    width = 1210 - margin.left - margin.right,
+    height = 400 - margin.top - margin.bottom;
+
+     var parseDate = d3.timeParse("%Y-%m-%d %H:%M:%S");
+
+    var x = d3.scaleTime()
+    .rangeRound([0, width]);
+
+    var y = d3.scaleLinear()
+    .rangeRound([height, 0]);
+
+
+
+    var svg = d3.select("#body")
+          .append("svg")
+          .attr("width", width + margin.left + margin.right)
+          .attr("height", height + margin.top + margin.bottom)
+          .append("g")
+          .attr("transform", "translate("+margin.left+","+margin.top+")");
+
+
+
+
+/*data.forEach(function(d){
+        d.date = d.date;
+        d.LW_in_Avg = +d.LW_in_Avg;
+});
+
+
+      x.domain(d3.extent(data, function(d) { return d.date; }));
+                //
+      y.domain([0, d3.max(data, function (d) { return d.LW_in_Avg; })]);
+      //
+
+
+      svg.append("g")
+          .attr("transform", "translate(0," + height + ")")
+          .call(d3.axisBottom(x))
+        .select(".domain")
+          .remove();
+
+      svg.append("g")
+          .call(d3.axisLeft(y))
+      svg.append("text")
+          .attr("fill", "#000")
+          .attr("transform", "rotate(-90)")
+          .attr("y", 6)
+          .attr("dy", "0.71em")
+          .attr("text-anchor", "end")
+          .text("Price ($)");
+
+      svg.append("path")
+          .datum(data)
+          .attr("fill","steelblue")
+                .attr("fill", "none")
+                    .attr("stroke", "steelblue")
+                    .attr("stroke-linejoin", "round")
+                    .attr("stroke-linecap", "round")
+                    .attr("stroke-width", 1.5)
+                    .attr("data", "line")
+                    .attr("d", d3.line()
+                    .x(function (d) { return x(d.date) })
+                   .y(function (d) { return y(d.LW_in_Avg) })
+                        )
+*/
+
+
+</script>
+
+
+<script>
+
+
+    $("#save-btn").click(function () {
+        var ablob = new Blob([JSON.stringify(data,null, 2)], { type: 'application/json' });
+    
+   saveAs(ablob, "data.txt");
+});
+
+
+
+
+</script>
+
+</body>

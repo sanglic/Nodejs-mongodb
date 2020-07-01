@@ -1,0 +1,111 @@
+
+svg{
+background-color: white;
+border: 0px inset black;
+border-radius: 0px;
+width:100%;
+fill: yes;
+  background-image: linear-gradient( #E0FFFF, rgba(117, 151, 197,0.6),#E0FFFF);
+
+}
+div.tooltip { 
+    position: absolute;     
+    text-align: center;     
+    width: 400px;          
+    height: 40px;         
+    padding: 2px;       
+    font: 12px sans-serif;    
+    background: white; 
+
+    border: 3px;
+    border-radius: 15px;    
+       
+    pointer-events: auto;     
+}
+
+.leaflet-bottom, .leaflet-top {
+    z-index: 0 !important; // This is 1000 by default
+    position: absolute;
+    pointer-events: none;
+}
+
+#grafica{
+
+margin-top: 0px;
+	
+}
+#grafica2{
+
+width:100% !important;
+display: flex;
+}
+
+.ti-footer .footerBottom {
+       height: 150px;
+}
+
+.ti-pagehead__logo {
+	background-image: url(logo.png);
+
+}
+
+.ti-pagehead__image {
+	background-image: url(head.jpg);
+}
+
+.ti-mainnav {
+	border-color: #1aa4d2;
+}
+.ti-mainnav__link:hover {
+	background-color: #1aa4d2;
+}
+.act .ti-mainnav__link {
+	background-color: #1aa4d2;
+}
+
+
+.ti-intro h3 {
+	color: #1aa4d2;
+}
+
+
+.ti-submenu {
+	border-color: #1aa4d2;
+}
+.ti-submenu li.cur>a {
+	background-color: #cdedf5;
+}
+.ti-submenu li.cur>a:hover {
+	background-color: #1aa4d2;
+}
+
+
+.content section>h2 {
+	color: #1aa4d2;
+}
+.content ul.csc-uploads li a,
+.content a {
+	color: #1aa4d2;
+}
+.imageteaser figure figcaption {
+	border-bottom-color: #1aa4d2;
+}
+.content .csc-header h2 {
+	color: #1aa4d2;
+	border-bottom-color: #1aa4d2;
+}
+.boxed {
+	border-top-color: #1aa4d2;
+	border-bottom-color: #1aa4d2;
+}
+.ti-logos {
+	border-bottom-color: #1aa4d2;
+}
+
+.ti-newslist__header,
+.ti-newslist__list li:last-child,
+.ti-smallcolumn__header,
+.ti-smallcolumn__header--noborder  {
+	color: #1aa4d2;
+	border-bottom-color: #1aa4d2;
+}

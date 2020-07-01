@@ -1,0 +1,16 @@
+{
+  "ExpandedNodes": [
+    "",
+    "\\src",
+    "\\src\\config",
+    "\\src\\models",
+    "\\src\\public",
+    "\\src\\public\\css",
+    "\\src\\routes",
+    "\\src\\views",
+    "\\src\\views\\layouts",
+    "\\src\\views\\notes"
+  ],
+  "SelectedNode": "\\src\\routes\\CreateGraph.js",
+  "PreviewInSolutionExplorer": false
+}
