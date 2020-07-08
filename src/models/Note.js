@@ -25,6 +25,6 @@ var FirstSchema = new mongoose.Schema({
 
 //});
 
-var Data = mongoose.model('Radiacion', {}, 'Radiacion');
+var Data = mongoose.model('Radiacion', FirstSchema, 'Radiacion');
 
 module.exports.Dat = Data;

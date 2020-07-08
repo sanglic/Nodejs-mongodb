@@ -1,3 +1,19 @@
+{{#each errors}}
+<div class="alert alert-danger alert-dismissible fade show" role="alert">
+    <strong>Por favor, revise los datos introducidos</strong> {{text}}
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+    </button>
+</div>
+{{/each }}
+
+<!--  <div class="alert alert-warning alert-dismissible fade show" role="alert">
+      <strong>Holy guacamole!</strong> You should check in on some of those fields below.
+      <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+      </button>
+  </div>
+  -->
 
 
 
@@ -5,182 +21,478 @@
 
 <body>
 
+    <!--<script <script src="https://d3js.org/d3.v4.js"></script>-->
+    <!--<script src="https://d3js.org/d3.v5.min.js"></script>-->
 
-<script src="http://d3js.org/d3.v4.min.js"></script>
-<script src="http://labratrevenge.com/d3-tip/javascripts/d3.tip.v0.6.3.js"></script>
-<script src="http://cdn.jsdelivr.net/g/filesaver.js"></script>
-<!----->
+    <script src="http://d3js.org/d3.v4.min.js"></script>
+ 
+    <script src="http://cdn.jsdelivr.net/g/filesaver.js"></script>
+    <!----->
+    <!-- <script>
+         $("form").submit(function (e) {
+             e.preventDefault(); // Prevents the page from refreshing
+             var $this = $(this); // `this` refers to the current form element
+             $.post(
+                 $this.attr("action"), // Gets the URL to sent the post to
+                 $this.serialize(), // Serializes form data in standard format
+                 function (data) { /** code to handle response **/ },
+                 "json" // The format the response should be in
+             );
+         });
 
-<form action="/CreateGraph" method="get" style="width:100%; background-color:#CBF4FA; border-radius: 15px">
-    <br />
+    </script>-->
 
-    <div id:"caja" style="text-align:center;">
-        <input type="checkbox" name="SW_in_Avg"> SW_in_Avg </input>
-        <input type="checkbox" name="SW_out_Avg"> SW_out_Avg </input>
-        <input type="checkbox" name="LW_in_Avg"> LW_in_Avg </input>
-        <input type="checkbox" name="LW_out_Avg"> LW_out_Avg </input>
-        <input type="checkbox" name="Rnet_Avg"> Rnet_Avg </input>
-    </div>
-    <br />
-    <div></div>
-    <div id:"tiempo" style="text-align:center; ">
-        <p>Start&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbspEnd</p>
+    <form method="post" action="/notes?_method=put" style="width:100%; background-color:#CBF4FA; border-radius: 15px">
+        <br />
 
-        <input type="date" id="date1"></input>
-        <input type="date" id="date2"></input>
+        <div id:"caja" style="text-align:center;">
+            <!--<input type="text" name="texto">-->
 
-    </div>
-    <button style="width:100%; background-color:lightsteelblue;  border-color: #6DBEC9; border-radius: 15px">Create Graph and File</button>
+
+
+            <input type="checkbox" style="width: 1em; height: 1em; vertical-align: middle;" name="SW_in_Avg"><span style="color:blue"> SW_in_Avg</span>
+            <input type="checkbox" style="width: 1em; height: 1em; vertical-align: middle;" name="SW_out_Avg"><span style="color:green"> SW_out_Avg</span>
+            <input type="checkbox" style="width: 1em; height: 1em; vertical-align: middle;" name="LW_in_Avg"><span style="color:#999900"> LW_in_Avg</span>
+            <input type="checkbox" style="width: 1em; height: 1em; vertical-align: middle;" name="LW_out_Avg"><span style="color:red"> LW_out_Avg</span>
+            <input type="checkbox" style="width: 1em; height: 1em; vertical-align: middle;" name="Rnet_Avg"><span style="color:purple"> Rnet_Avg</span>
+        </div>
+
+        <div></div>
+        <div id:"tiempo" style="text-align:center; ">
+
+            <span> Start: </span><input type="date" name="date1" min="{{Fecha_Start}}" max="{{Fecha_End}}" id="start">
+            <span> End: </span><input type="date" name="date2" min="{{Fecha_Start}}" max="{{Fecha_End}}" id="end">
+
+        </div>
+        <button style="width:100%; background-color:lightsteelblue;  border-color: #6DBEC9; border-radius: 15px">Create Graph and File</button>
     </form>
-    <br />
-    <div id="body"></div>
-    <div><button id="save-btn" style="width:100%;border-color: #6DBEC9; background-color:lightsteelblue; border-radius: 15px">Download Data</button>
+
+    <div id="grafica">
+
     </div>
-</div>
-<script>
+    <div>
+        <button id="save-btn" style="width:100%;border-color: #6DBEC9; background-color:lightsteelblue; border-radius: 15px">Download Data in JSON format</button>
+    </div>
+    </div>
 
-    /*function EstadoCajas() {
-        var SW_i = $('input[id=SW_in_Avg]').prop('checked');
-        var SW_o = $('input[id=SW_out_Avg]').prop('checked');
-        var LW_i = $('input[id=LW_in_Avg]').prop('checked');
-        var LW_o = $('input[id=LW_out_Avg]').prop('checked');
-        var Rnet = $('input[id=Rnet_Avg]').prop('checked');
-        return [SW_i, SW_o, LW_i, LW_o, Rnet];
-       
+    <script>
 
-    }
-    function EstadoFecha() {
-        var startdate = document.querySelector('input[id=date1]').value;
-        var enddate = document.querySelector('input[id=date2]').value;
-        return [startdate, enddate];
+       /* console.log({{{ LWinAvg }}});
+        console.log({{{ SWoutAvg }}});
+        console.log({{{ SWinAvg }}});
+        console.log({{{ LWoutAvg }}});
+        console.log({{{ RnetAvg }}});
 
-    }
-    
-    function CallGraph() {
-        var url = '/notes';
-        console.log(url);
-        var valoresCaja = EstadoCajas();
-        var valoresFecha = EstadoFecha();
-        console.log(valoresCaja);
-        console.log(valoresFecha);
-        
+        var data = {{{ resultado }}};
+        var data_print = {{{ resultado }}};
+        console.log(data);
 
-       
-        
+;
 
-        
-        var xmlHttp = new XMLHttpRequest();
+        */
+        /////////////////////////////Conversión para intrudicir en grafica
 
-        xmlHttp.onreadystatechange = function () {
-        if (xmlHttp.readyState === 4) {
-        //handle server response here if you want to
-                }
-              }
-        xmlHttp.open("POST", url, true); // false for synchronous request
-        xmlHttp.send(valoresCaja);
+        const Array_Checkbox = []
+        Array_graph= '-'
+
+        if (JSON.stringify({{{ LWinAvg }}}) == '"on"') {
+
+            $('input[name="LW_in_Avg"]').prop("checked", true);
+            Array_Checkbox.push("LW_in_Avg");
+            Array_graph = Array_graph + ' LW_in_Avg '
+
+        }
+
+        if (JSON.stringify({{{ LWoutAvg }}}) == '"on"') {
+            $('input[name="LW_out_Avg"]').prop("checked", true);
+            Array_Checkbox.push("LW_out_Avg");
+            Array_graph = Array_graph + ' LW_out_Avg '
+
+        }
+
+        if (JSON.stringify({{{ RnetAvg }}}) == '"on"') {
+            $('input[name="Rnet_Avg"]').prop("checked", true);
+            Array_Checkbox.push("RnetAvg");
+            Array_graph = Array_graph + ' Rnet_Avg '
+
+        }
+
+        if (JSON.stringify({{{ SWinAvg }}}) == '"on"') {
+            $('input[name="SW_in_Avg"]').prop("checked", true);
+             Array_Checkbox.push("SW_in_Avg");
+            Array_graph = Array_graph + ' SW_in_Avg '
+
+        }
+
+        if (JSON.stringify({{{ SWoutAvg }}}) == '"on"') {
+            $('input[name="SW_out_Avg"]').prop("checked", true);
+            Array_Checkbox.push("SW_out_Avg");
+            Array_graph = Array_graph + ' SW_out_Avg '
+
+        }
+        console.log(Array_Checkbox);
+        console.log(Array_graph);
+
+
+        //Array_graph = JSON.parse(Array_graph);
 
 
 
-    }
-    */
 
 
 
 
-    var data = (JSON.parse(JSON.stringify({{{ resultado }}})));
 
-    console.log(data);
-    /*var gida2 = JSON.parse();
-    /*var gida1 = JSON.stringify(gida2);
-    /*console.log(gida1)
-    //var gida = JSON.parse(gida1);
-    */
-  
+
+
+
+
+      var data = {{{ resultado }}};
+        var data_print = {{{ resultado }}};
+
+
 
 
     var margin = {top: 70, right: 350, bottom: 100, left: 70},
-    width = 1210 - margin.left - margin.right,
-    height = 400 - margin.top - margin.bottom;
-
-     var parseDate = d3.timeParse("%Y-%m-%d %H:%M:%S");
-
-    var x = d3.scaleTime()
-    .rangeRound([0, width]);
-
-    var y = d3.scaleLinear()
-    .rangeRound([height, 0]);
-
-
-
-    var svg = d3.select("#body")
-          .append("svg")
-          .attr("width", width + margin.left + margin.right)
-          .attr("height", height + margin.top + margin.bottom)
-          .append("g")
-          .attr("transform", "translate("+margin.left+","+margin.top+")");
+            width = 1210 - margin.left - margin.right,
+            height = 400 - margin.top - margin.bottom;
 
 
 
 
-/*data.forEach(function(d){
-        d.date = d.date;
-        d.LW_in_Avg = +d.LW_in_Avg;
-});
+
+    var svg = d3.select("#grafica")
+             .append("svg")
+             .attr("width", width + margin.left + margin.right)
+             .attr("height", height + margin.top + margin.bottom)
+             .append("g")
+             .attr("transform",
+                 "translate(" + margin.left + "," + margin.top + ")")
+
+               // Define the div for the tooltip
+     var div = d3.select("body").append("div")
+             .attr("class", "tooltip")
+            .style("opacity", 0);
 
 
-      x.domain(d3.extent(data, function(d) { return d.date; }));
-                //
-      y.domain([0, d3.max(data, function (d) { return d.LW_in_Avg; })]);
-      //
+    //var parseDate = d3.timeParse("%Y-%m-%d %H:%M:%S");
+        var parseDate = d3.timeParse("%d/%m/%Y %H:%M");
 
 
+        //Leyenda izquierda
+        svg.append("text")
+        .attr("x", (width / 2))             
+        .attr("y", (height+margin.bottom/2))
+        .attr("transform", "translate(-325 ,520) rotate(270)")
+        .attr("text-anchor", "middle")  
+        .style("font-size", "15px")  
+        .text("LW_in_Avg LW_out_Avg")
+            .style("color", "#008B8B");
+
+        //Leyenda derecha
+        svg.append("text")
+        .attr("x", (width / 2))             
+        .attr("y", (height+margin.bottom/2))
+        .attr("transform", "translate(1110 ,-280) rotate(90)")
+        .attr("text-anchor", "middle")  
+        .style("font-size", "15px")  
+        .text("SW_in_Avg SW_out_Avg Rnet_Avg")
+        .style("color","#008B8B");
+
+
+
+
+        ///Titulo
+       svg.append("text")
+        .attr("x", (width / 2))
+        .attr("y", 10 - (margin.top / 2))
+        .attr("text-anchor", "middle")
+        .style("font-size", "25px")
+        .text("Radiation  " )
+        .style("color","#008B8B");
+
+        console.log(JSON.stringify({{{ d1_Conv }}}));
+        console.log(({{{ Fecha_End }}}));
+
+        //Leyenda
+        svg.append("text").attr("x", (-170+width / 2))
+            .attr("y", (-10 + height + margin.bottom / 2))
+            .text("Date from " + (JSON.stringify({{{ d1_Conv }}}))+ " to "+(JSON.stringify({{{ d2_Conv }}}))).style("font-size", "20px")
+            .attr("alignment-baseline","middle")
+            .style("stroke", "black")
+            .attr("stroke-width","0.7")
+            .attr("opacity", 1)
+
+
+        data.forEach(function (d) {
+        //Array_graph
+        d.date = parseDate(d.date);
+        });
+         data.forEach(function(d) {
+        //Array_graph
+         d.LW_in_Avg = Number(d.LW_in_Avg);
+         });
+
+          data.forEach(function(d) {
+              //Array_graph
+              d.LW_out_Avg = Number(d.LW_out_Avg);
+          });
+
+         data.forEach(function(d) {
+              //Array_graph
+              d.SW_out_Avg = Number(d.SW_out_Avg);
+         });
+
+         data.forEach(function(d) {
+              //Array_graph
+              d.SW_in_Avg = Number(d.SW_in_Avg);
+         });
+         data.forEach(function(d) {
+              //Array_graph
+              d.Rnet_Avg = Number(d.Rnet_Avg);
+         });
+
+
+
+
+
+        var x = d3.scaleTime()
+            .domain(d3.extent(data, function(d) { return d.date; }))
+            .range([0, width]);
+
+        var xAxis =  svg.append("g")
+                 .attr("transform", "translate(0," + height + ")")
+                  .call(d3.axisBottom(x));
+
+
+        if ((JSON.stringify({{{ LWoutAvg }}}) == '"on"') || (JSON.stringify({{{ LWinAvg }}}) == '"on"')) {
+
+            var y = d3.scaleLinear()
+                .domain([250, 500])
+                .range([height, 0]);
+            var yAxis = svg.append("g")
+                .attr("class", "axisRed")
+                .call(d3.axisLeft(y));
+
+            var z = d3.scaleLinear()
+                .domain([250, 500])
+                .range([height, 0]);
+
+            // Add a clipPath: everything out of this area won't be drawn.
+            var clip = svg.append("defs").append("svg:clipPath")
+                .attr("id", "clip")
+                .append("svg:rect")
+                .attr("width", width)
+                .attr("height", height)
+                .attr("x", 0)
+                .attr("y", 0)
+                .style("fill", "none");
+
+
+        }
+
+
+
+        if ((JSON.stringify({{{ SWinAvg }}}) == '"on"') || (JSON.stringify({{{ RnetAvg }}}) == '"on"') || (JSON.stringify({{{ SWoutAvg }}}) == '"on"')) {
+            var w = d3.scaleLinear()
+                .domain([-100, 800])
+                .range([height, 0]);
+            var wAxis = svg.append("g")
+                .attr("class", "axisBlue")
+                .attr("transform", "translate( " + width + ", 0 )")
+                .call(d3.axisRight(w));
+
+
+
+            var q = d3.scaleLinear()
+                .domain([-100, 800])
+                .range([height, 0]);
+
+            var t = d3.scaleLinear()
+                .domain([-100, 800])
+                .range([height, 0]);
+
+            var clip2 = svg.append("defs").append("svg:clipPath") //PRUEBA
+        .attr("id", "clip2")
+        .append("svg:rect")
+        .attr("width", width )
+        .attr("height", height )
+        .attr("x", 0)
+        .attr("w", 0);
+
+            function make_y_gridlines() {
+                return d3.axisLeft(w)
+                .ticks(6)
+            }
+
+
+        }
+
+         function make_x_gridlines() {
+            return d3.axisBottom(x)
+                .ticks(11)
+                 }
+
+                // gridlines in y axis function
+             function make_y_gridlines() {
+                 return d3.axisLeft(y)
+             .ticks(6)
+             }
+
+
+
+
+
+
+           // add the X gridlines
       svg.append("g")
-          .attr("transform", "translate(0," + height + ")")
-          .call(d3.axisBottom(x))
-        .select(".domain")
-          .remove();
+      .attr("class", "grid")
+      .attr("opacity", 0.1)
+      .attr("transform", "translate(0," + height + ")")
+      .call(make_x_gridlines()
+          .tickSize(-height)
+          .tickFormat("")
+      )
 
+ // add the Y gridlines
       svg.append("g")
-          .call(d3.axisLeft(y))
-      svg.append("text")
-          .attr("fill", "#000")
-          .attr("transform", "rotate(-90)")
-          .attr("y", 6)
-          .attr("dy", "0.71em")
-          .attr("text-anchor", "end")
-          .text("Price ($)");
-
-      svg.append("path")
-          .datum(data)
-          .attr("fill","steelblue")
-                .attr("fill", "none")
-                    .attr("stroke", "steelblue")
-                    .attr("stroke-linejoin", "round")
-                    .attr("stroke-linecap", "round")
-                    .attr("stroke-width", 1.5)
-                    .attr("data", "line")
-                    .attr("d", d3.line()
-                    .x(function (d) { return x(d.date) })
-                   .y(function (d) { return y(d.LW_in_Avg) })
-                        )
-*/
-
-
-</script>
-
-
-<script>
-
-
-    $("#save-btn").click(function () {
-        var ablob = new Blob([JSON.stringify(data,null, 2)], { type: 'application/json' });
-    
-   saveAs(ablob, "data.txt");
-});
+      .attr("class", "grid")
+      .attr("opacity", 0.1)
+      .call(make_y_gridlines()
+          .tickSize(-width)
+          .tickFormat("")
+      )
 
 
 
 
-</script>
 
+    // Add the valueline path.
+        if (JSON.stringify({{{ LWinAvg }}}) == '"on"') {
+            var line = svg.append('g')
+      	        .attr("clip-path", "url(#clip)")
+              	 // Add the line
+         line.append("path")
+             .datum(data)
+            .attr("class", "line")  // I add the class line to be able to modify this line later on.
+            .attr("fill", "none")
+            .attr("stroke", "yellow")
+             .attr("opacity", 1)
+            .attr("stroke-width", 1.5)
+            .attr("d", d3.line()
+                 .x(function(d) { return x(d.date) })
+                 .y(function(d) { return y(d.LW_in_Avg) })
+        )
+
+
+        }
+        if (JSON.stringify({{{ LWoutAvg }}}) == '"on"') {
+               var line2 = svg.append('g')
+      	            .attr("clip-path", "url(#clip)")
+              	 // Add the line
+                 line2.append("path")
+                     .datum(data)
+                     .attr("class", "line")  // I add the class line to be able to modify this line later on.
+                      .attr("fill", "none")
+                     .attr("stroke", "red")
+                     .attr("opacity", 1)
+                     .attr("stroke-width", 1.5)
+                     .attr("d", d3.line()
+                 .x(function(d) { return x(d.date) })
+                 .y(function(d) { return z(d.LW_out_Avg) })
+        )
+        }
+        if (JSON.stringify({{{ SWoutAvg }}}) == '"on"') {
+            var line3 = svg.append('g')
+      	            .attr("clip-path", "url(#clip2)")
+              	 // Add the line
+                 line3.append("path")
+                     .datum(data)
+                     .attr("class", "line")  // I add the class line to be able to modify this line later on.
+                      .attr("fill", "none")
+                     .attr("stroke", "green")
+                     .attr("opacity", 1)
+                     .attr("stroke-width", 1.5)
+                     .attr("d", d3.line()
+                 .x(function(d) { return x(d.date) })
+                 .y(function(d) { return q(d.SW_out_Avg) })
+        )
+        }
+        if (JSON.stringify({{{ SWinAvg }}}) == '"on"') {
+            var line4 = svg.append('g')
+      	            .attr("clip-path", "url(#clip2)")
+              	 // Add the line
+                 line4.append("path")
+                     .datum(data)
+                     .attr("class", "line")  // I add the class line to be able to modify this line later on.
+                      .attr("fill", "none")
+                     .attr("stroke", "blue")
+                     .attr("opacity", 1)
+                     .attr("stroke-width", 1.5)
+                     .attr("d", d3.line()
+                 .x(function(d) { return x(d.date) })
+                 .y(function(d) { return t(d.SW_in_Avg) })
+        )
+        }
+        if (JSON.stringify({{{ RnetAvg }}}) == '"on"') {
+            var line5 = svg.append('g')
+      	            .attr("clip-path", "url(#clip2)")
+              	 // Add the line
+                 line5.append("path")
+                     .datum(data)
+                     .attr("class", "line")  // I add the class line to be able to modify this line later on.
+                      .attr("fill", "none")
+                     .attr("stroke", "purple")
+                     .attr("opacity", 1)
+                     .attr("stroke-width", 1.5)
+                     .attr("d", d3.line()
+                 .x(function(d) { return x(d.date) })
+                 .y(function(d) { return w(d.Rnet_Avg) })
+        )
+        }
+
+
+
+
+
+    // Add the X Axis
+    svg.append("g")
+        .attr("class", "x axis")
+        .attr("transform", "translate(0," + height + ")")
+            .call(xAxis);
+
+
+    // Add the Y Axis
+    svg.append("g")
+        .attr("class", "y axis")
+            .call(yAxis);
+
+    //  Add the W Axis
+    svg.append("g")
+        .attr("class", "y axis")
+        .call(wAxis);
+
+
+
+
+
+
+
+
+    </script>
+
+
+    <script>
+
+
+        $("#save-btn").click(function () {
+            var ablob = new Blob([JSON.stringify(data_print, null, 2)], { type: 'application/json' });
+
+            saveAs(ablob, "data.txt");
+        });
+
+
+
+
+    </script>
 </body>
